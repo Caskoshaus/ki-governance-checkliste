@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KI-Governance-Checkliste für Bildungseinrichtungen - Interaktives Selbstbewertungstool">
+    <meta name="author" content="VHS Oberhausen">
+    <meta name="license" content="CC BY-SA 4.0">
+    <title>KI-Governance-Checkliste für Bildungseinrichtungen</title>
+    <!-- Chart.js von CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<!-- 
+==============================================
+KI-GOVERNANCE-CHECKLISTE FÜR BILDUNGSEINRICHTUNGEN
+DSGVO-KONFORM | RECHTSSICHER
+Version 1.1 - November 2025
+
+Lizenz: CC BY-SA 4.0
+https://creativecommons.org/licenses/by-sa/4.0/deed.de
+
+Ursprünglich entwickelt an der VHS Oberhausen
+
+Ermöglicht durch:
+- Land Nordrhein-Westfalen
+- VHS Oberhausen  
+- Die Bürgerinnen und Bürger der Stadt Oberhausen,
+  die es ermöglichen, dem Weiterbildungsauftrag 
+  für die Stadt Oberhausen nachzukommen
+
+Für TYPO3, WordPress, oder als Standalone-HTML nutzbar
+==============================================
+-->
+
+<!-- Styles -->
+<style>
+.vhs-ki-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.vhs-header {
+  background: linear-gradient(135deg, #0066a1 0%, #004c7a 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 102, 161, 0.2);
+}
+.vhs-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+.vhs-header p {
+  margin: 0;
+  opacity: 0.9;
+}
+.vhs-info-box {
+  background: #e3f5fc;
+  border-left: 4px solid #0066a1;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+.vhs-info-box h3 {
+  margin: 0 0 0.5rem 0;
+  color: #004c7a;
+  font-size: 1.1rem;
+}
+.vhs-info-box h3::before {
+  content: "[DSGVO] ";
+  font-weight: bold;
+}
+.vhs-info-box p {
+  margin: 0.5rem 0 0 0;
+  line-height: 1.6;
+}
+.vhs-info-box strong {
+  color: #c0392b;
+}
+.vhs-progress-bar {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.vhs-progress-bar h3 {
+  margin: 0 0 0.8rem 0;
+  color: #0066a1;
+  font-size: 1.1rem;
+}
+.vhs-progress-track {
+  background: #e0e4ea;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.vhs-progress-fill {
+  background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
+  height: 100%;
+  transition: width 0.3s ease;
+  color: white;
+  font-weight: bold;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+.vhs-category {
+  margin-bottom: 2rem;
+  background: #fff;
+  border: 2px solid #e0e4ea;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.vhs-category h2 {
+  margin-top: 0;
+  color: #0066a1;
+  border-bottom: 3px solid #0066a1;
+  padding-bottom: 0.5rem;
+  font-size: 1.4rem;
+}
+.vhs-item {
+  margin: 1.5rem 0;
+  padding: 1.2rem;
+  background: #f8fafb;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  transition: border-color 0.2s;
+}
+.vhs-item.answered {
+  border-left-color: #27ae60;
+}
+.vhs-item label.question {
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+  color: #273849;
+  display: block;
+}
+.vhs-options {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.vhs-options label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.vhs-options label:hover {
+  background: rgba(0, 102, 161, 0.1);
+}
+.vhs-options input[type="radio"] {
+  accent-color: #0066a1;
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+}
+.vhs-options select {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.vhs-chart-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin: 2rem 0;
+}
+.vhs-results {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.vhs-results h2 {
+  color: #0066a1;
+  margin-top: 0;
+  font-size: 1.5rem;
+}
+.vhs-download-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin: 2rem 0;
+  text-align: center;
+}
+.vhs-download-section h3 {
+  margin: 0 0 0.5rem 0;
+  color: #0066a1;
+  font-size: 1.3rem;
+}
+.vhs-download-section h3::before {
+  content: "[Download] ";
+  font-weight: bold;
+}
+.vhs-download-section p {
+  margin: 0.5rem 0 1.5rem 0;
+  color: #4b5b6a;
+}
+.vhs-download-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.vhs-btn {
+  padding: 0.9rem 1.8rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: inherit;
+}
+.vhs-btn-primary {
+  background: linear-gradient(135deg, #0066a1 0%, #004c7a 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 102, 161, 0.3);
+}
+.vhs-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 102, 161, 0.4);
+}
+.vhs-btn-secondary {
+  background: white;
+  color: #0066a1;
+  border: 2px solid #0066a1;
+}
+.vhs-btn-secondary:hover {
+  background: #f0f7fb;
+  transform: translateY(-2px);
+}
+.vhs-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.vhs-btn-icon {
+  font-weight: bold;
+  font-size: 1rem;
+}
+.vhs-status-low { 
+  color: #c0392b; 
+  font-weight: bold; 
+}
+.vhs-status-mid { 
+  color: #f39c12; 
+  font-weight: bold; 
+}
+.vhs-status-high { 
+  color: #27ae60; 
+  font-weight: bold; 
+}
+.vhs-urgent {
+  background: #ffeaea;
+  border-left: 4px solid #c0392b;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+}
+.vhs-urgent h3 {
+  margin-top: 0;
+  color: #c0392b;
+  font-size: 1.2rem;
+}
+.vhs-urgent h3::before {
+  content: "[!] ";
+  font-weight: bold;
+}
+.vhs-urgent ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+.vhs-footer {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: #f1f7fa;
+  border-top: 3px solid #0066a1;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: #4b5b6a;
+  line-height: 1.6;
+}
+.vhs-footer h3 {
+  color: #0066a1;
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+.vhs-footer h4 {
+  color: #004c7a;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+.vhs-footer a {
+  color: #0066a1;
+  text-decoration: none;
+}
+.vhs-footer a:hover {
+  text-decoration: underline;
+}
+.vhs-footer ol,
+.vhs-footer ul {
+  padding-left: 1.5rem;
+}
+.vhs-footer li {
+  margin-bottom: 0.5rem;
+}
+.vhs-legal-notice {
+  background: #fff9e6;
+  border: 1px solid #f39c12;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+@media (max-width: 768px) {
+  .vhs-ki-container {
+    padding: 0.5rem;
+  }
+  .vhs-header h1 {
+    font-size: 1.4rem;
+  }
+  .vhs-category {
+    padding: 1.5rem 1rem;
+  }
+  .vhs-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .vhs-download-buttons {
+    flex-direction: column;
+  }
+  .vhs-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+@media print {
+  body {
+    background: white;
+  }
+  .vhs-download-section,
+  .vhs-btn,
+  .vhs-progress-bar {
+    display: none;
+  }
+  .vhs-category {
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+  .vhs-chart-container {
+    page-break-before: always;
+  }
+  .vhs-footer {
+    page-break-before: always;
+  }
+}
+</style>
+
+<!-- HTML Inhalt -->
+<div class="vhs-ki-container">
+  <div class="vhs-header">
+    <h1>Oberhausener KI-Checkliste: Bildung zur KI</h1>
+    <p>Workshop-Tool für KI-Kompetenz in der Erwachsenenbildung</p>
+  </div>
+  
+  <div class="vhs-info-box">
+    <h3>Datenschutzhinweis</h3>
+    <p><strong>Ihre Daten bleiben bei Ihnen!</strong> Diese Checkliste entspricht der DSGVO (EU 2016/679). Es werden keine personenbezogenen Daten auf dem Server gespeichert, protokolliert oder übertragen. Alle Eingaben werden ausschließlich lokal in Ihrem Browser verarbeitet. Es erfolgt keine Verbindung zu externen Servern oder Diensten. Sie können Ihre Ergebnisse jederzeit herunterladen.</p>
+    <p style="margin-top: 0.5rem;"><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. a DSGVO (Einwilligung durch Nutzung). Keine Cookies, kein Tracking, keine Weitergabe an Dritte.</p>
+  </div>
+
+  <div class="vhs-progress-bar">
+    <h3>Bearbeitungsfortschritt</h3>
+    <div class="vhs-progress-track">
+      <div class="vhs-progress-fill" id="progressBar">0%</div>
+    </div>
+    <p style="margin: 0.5rem 0 0 0; color: #4b5b6a; font-size: 0.9rem;">
+      <span id="progressText">0 von 36 Fragen beantwortet</span>
+    </p>
+  </div>
+
+  <form id="vhsKiForm">
+    <!-- Kategorie 1 -->
+    <div class="vhs-category">
+      <h2>1. KI aus Leitungssicht</h2>
+      
+      <div class="vhs-item" data-question="leitung1">
+    <label class="question">Haben wir eine KI-Strategie, die sich klar an Menschenrechten, demokratischen Werten und pädagogischen Grundsätzen orientiert?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="leitung1" value="0"> Noch nicht</label>
+      <label><input type="radio" name="leitung1" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="leitung1" value="2"> Teilweise</label>
+      <label><input type="radio" name="leitung1" value="3"> Weitgehend</label>
+      <label><input type="radio" name="leitung1" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_leitung1">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="leitung2">
+    <label class="question">Sind Verfahren zur menschlichen Aufsicht und Verantwortlichkeit für alle KI-Prozesse dokumentiert und verbindlich?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="leitung2" value="0"> Noch nicht</label>
+      <label><input type="radio" name="leitung2" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="leitung2" value="2"> Teilweise</label>
+      <label><input type="radio" name="leitung2" value="3"> Weitgehend</label>
+      <label><input type="radio" name="leitung2" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_leitung2">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="leitung3">
+    <label class="question">Wird bei allen KI-Systemen der Datenschutz (inkl. Datensparsamkeit) verbindlich umgesetzt und überprüft?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="leitung3" value="0"> Noch nicht</label>
+      <label><input type="radio" name="leitung3" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="leitung3" value="2"> Teilweise</label>
+      <label><input type="radio" name="leitung3" value="3"> Weitgehend</label>
+      <label><input type="radio" name="leitung3" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_leitung3">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="leitung4">
+    <label class="question">Gibt es ein schriftlich fixiertes und kommuniziertes Regelwerk zur KI-Nutzung für alle Mitarbeitenden?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="leitung4" value="0"> Noch nicht</label>
+      <label><input type="radio" name="leitung4" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="leitung4" value="2"> Teilweise</label>
+      <label><input type="radio" name="leitung4" value="3"> Weitgehend</label>
+      <label><input type="radio" name="leitung4" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_leitung4">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="leitung5">
+    <label class="question">Werden ökologische und ethische Kriterien bei der Auswahl von KI-Systemen berücksichtigt?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="leitung5" value="0"> Noch nicht</label>
+      <label><input type="radio" name="leitung5" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="leitung5" value="2"> Teilweise</label>
+      <label><input type="radio" name="leitung5" value="3"> Weitgehend</label>
+      <label><input type="radio" name="leitung5" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_leitung5">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="leitung6">
+    <label class="question">Sind Zuständigkeiten für Einführung, Betrieb und Kontrolle von KI-Systemen klar festgelegt und qualifiziert besetzt?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="leitung6" value="0"> Noch nicht</label>
+      <label><input type="radio" name="leitung6" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="leitung6" value="2"> Teilweise</label>
+      <label><input type="radio" name="leitung6" value="3"> Weitgehend</label>
+      <label><input type="radio" name="leitung6" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_leitung6">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="leitung7">
+    <label class="question">Werden KI-gestützte Bildungsangebote regelmäßig überprüft und verbessert?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="leitung7" value="0"> Noch nicht</label>
+      <label><input type="radio" name="leitung7" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="leitung7" value="2"> Teilweise</label>
+      <label><input type="radio" name="leitung7" value="3"> Weitgehend</label>
+      <label><input type="radio" name="leitung7" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_leitung7">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="leitung8">
+    <label class="question">Treffen wir Entscheidungen über KI-Einsatz gemeinsam, nachvollziehbar und auf Basis überprüfbarer Daten?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="leitung8" value="0"> Noch nicht</label>
+      <label><input type="radio" name="leitung8" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="leitung8" value="2"> Teilweise</label>
+      <label><input type="radio" name="leitung8" value="3"> Weitgehend</label>
+      <label><input type="radio" name="leitung8" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_leitung8">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- Kategorie 2 -->
+<div class="vhs-category">
+  <h2>2. Stadtgesellschaft der Lernenden</h2>
+  
+  <div class="vhs-item" data-question="stadt1">
+    <label class="question">Berücksichtigen unsere KI-Angebote unterschiedliche Lebenssituationen und Nutzungskontexte?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="stadt1" value="0"> Noch nicht</label>
+      <label><input type="radio" name="stadt1" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="stadt1" value="2"> Teilweise</label>
+      <label><input type="radio" name="stadt1" value="3"> Weitgehend</label>
+      <label><input type="radio" name="stadt1" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_stadt1">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="stadt2">
+    <label class="question">Gibt es Angebote zur Förderung von digitaler Balance und gesundem Medienumgang?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="stadt2" value="0"> Noch nicht</label>
+      <label><input type="radio" name="stadt2" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="stadt2" value="2"> Teilweise</label>
+      <label><input type="radio" name="stadt2" value="3"> Weitgehend</label>
+      <label><input type="radio" name="stadt2" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_stadt2">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="stadt3">
+    <label class="question">Fördern unsere Angebote aktiv Wohlbefinden und Zufriedenheit beim Lernen?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="stadt3" value="0"> Noch nicht</label>
+      <label><input type="radio" name="stadt3" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="stadt3" value="2"> Teilweise</label>
+      <label><input type="radio" name="stadt3" value="3"> Weitgehend</label>
+      <label><input type="radio" name="stadt3" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_stadt3">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="stadt4">
+    <label class="question">Werden kulturelle Vielfalt und Minderheitenperspektiven in unseren Angeboten sichtbar integriert?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="stadt4" value="0"> Noch nicht</label>
+      <label><input type="radio" name="stadt4" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="stadt4" value="2"> Teilweise</label>
+      <label><input type="radio" name="stadt4" value="3"> Weitgehend</label>
+      <label><input type="radio" name="stadt4" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_stadt4">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="stadt5">
+    <label class="question">Fördern unsere Angebote demokratische Teilhabe, Dialog und kritisches Denken?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="stadt5" value="0"> Noch nicht</label>
+      <label><input type="radio" name="stadt5" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="stadt5" value="2"> Teilweise</label>
+      <label><input type="radio" name="stadt5" value="3"> Weitgehend</label>
+      <label><input type="radio" name="stadt5" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_stadt5">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="stadt6">
+    <label class="question">Tragen unsere Maßnahmen dazu bei, digitale Ungleichheit zu verringern?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="stadt6" value="0"> Noch nicht</label>
+      <label><input type="radio" name="stadt6" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="stadt6" value="2"> Teilweise</label>
+      <label><input type="radio" name="stadt6" value="3"> Weitgehend</label>
+      <label><input type="radio" name="stadt6" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_stadt6">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="stadt7">
+    <label class="question">Werden benachteiligte oder besonders schutzbedürftige Gruppen gezielt einbezogen?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="stadt7" value="0"> Noch nicht</label>
+      <label><input type="radio" name="stadt7" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="stadt7" value="2"> Teilweise</label>
+      <label><input type="radio" name="stadt7" value="3"> Weitgehend</label>
+      <label><input type="radio" name="stadt7" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_stadt7">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- Kategorie 3 -->
+<div class="vhs-category">
+  <h2>3. Differenzerfahrung, Vielfalt und Interaktion</h2>
+  
+  <div class="vhs-item" data-question="divers1">
+    <label class="question">Unterstützen unsere Programme generationenübergreifendes und gegenseitiges Lernen?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="divers1" value="0"> Noch nicht</label>
+      <label><input type="radio" name="divers1" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="divers1" value="2"> Teilweise</label>
+      <label><input type="radio" name="divers1" value="3"> Weitgehend</label>
+      <label><input type="radio" name="divers1" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_divers1">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="divers2">
+    <label class="question">Gibt es Maßnahmen, um algorithmische Diskriminierung zu vermeiden und Vielfalt zu fördern?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="divers2" value="0"> Noch nicht</label>
+      <label><input type="radio" name="divers2" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="divers2" value="2"> Teilweise</label>
+      <label><input type="radio" name="divers2" value="3"> Weitgehend</label>
+      <label><input type="radio" name="divers2" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_divers2">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="divers3">
+    <label class="question">Gibt es Möglichkeiten für Teilnehmende und Lehrende, Feedback zum KI-Einsatz zu geben?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="divers3" value="0"> Noch nicht</label>
+      <label><input type="radio" name="divers3" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="divers3" value="2"> Teilweise</label>
+      <label><input type="radio" name="divers3" value="3"> Weitgehend</label>
+      <label><input type="radio" name="divers3" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_divers3">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="divers4">
+    <label class="question">Sind gemeinschaftliche Lernformate wie Workshops oder Fallstudien fester Bestandteil unserer Arbeit?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="divers4" value="0"> Noch nicht</label>
+      <label><input type="radio" name="divers4" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="divers4" value="2"> Teilweise</label>
+      <label><input type="radio" name="divers4" value="3"> Weitgehend</label>
+      <label><input type="radio" name="divers4" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_divers4">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="divers5">
+    <label class="question">Werden Inklusion, kulturelle Repräsentation und unterschiedliche Bedürfnisse aktiv berücksichtigt?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="divers5" value="0"> Noch nicht</label>
+      <label><input type="radio" name="divers5" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="divers5" value="2"> Teilweise</label>
+      <label><input type="radio" name="divers5" value="3"> Weitgehend</label>
+      <label><input type="radio" name="divers5" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_divers5">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="divers6">
+    <label class="question">Fördern wir Bewusstsein und einen offenen Umgang mit Vorurteilen (Biases) in KI-Systemen?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="divers6" value="0"> Noch nicht</label>
+      <label><input type="radio" name="divers6" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="divers6" value="2"> Teilweise</label>
+      <label><input type="radio" name="divers6" value="3"> Weitgehend</label>
+      <label><input type="radio" name="divers6" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_divers6">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="divers7">
+    <label class="question">Nutzen wir offene Software oder freie Lernmaterialien (OER)?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="divers7" value="0"> Noch nicht</label>
+      <label><input type="radio" name="divers7" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="divers7" value="2"> Teilweise</label>
+      <label><input type="radio" name="divers7" value="3"> Weitgehend</label>
+      <label><input type="radio" name="divers7" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_divers7">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- Kategorie 4 -->
+<div class="vhs-category">
+  <h2>4. Langsamkeit & Nachhaltigkeit</h2>
+  
+  <div class="vhs-item" data-question="slow1">
+    <label class="question">Bieten wir Raum für Reflexion, bewusste Nutzung und digitale Selbstbestimmung?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="slow1" value="0"> Noch nicht</label>
+      <label><input type="radio" name="slow1" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="slow1" value="2"> Teilweise</label>
+      <label><input type="radio" name="slow1" value="3"> Weitgehend</label>
+      <label><input type="radio" name="slow1" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_slow1">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="slow2">
+    <label class="question">Ist uns pädagogische Qualität wichtiger als technische Neuerungen, und werden KI-Tools kritisch bewertet?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="slow2" value="0"> Noch nicht</label>
+      <label><input type="radio" name="slow2" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="slow2" value="2"> Teilweise</label>
+      <label><input type="radio" name="slow2" value="3"> Weitgehend</label>
+      <label><input type="radio" name="slow2" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_slow2">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="slow3">
+    <label class="question">Sind Programme zur KI-Kompetenz (AI Literacy) verbindlich im Arbeitsplan verankert?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="slow3" value="0"> Noch nicht</label>
+      <label><input type="radio" name="slow3" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="slow3" value="2"> Teilweise</label>
+      <label><input type="radio" name="slow3" value="3"> Weitgehend</label>
+      <label><input type="radio" name="slow3" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_slow3">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="slow4">
+    <label class="question">Gibt es regelmäßige KI-Fortbildungen für Lehrkräfte, Leitung und Teams?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="slow4" value="0"> Noch nicht</label>
+      <label><input type="radio" name="slow4" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="slow4" value="2"> Teilweise</label>
+      <label><input type="radio" name="slow4" value="3"> Weitgehend</label>
+      <label><input type="radio" name="slow4" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_slow4">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="slow5">
+    <label class="question">Bestehen langfristige Kooperationen mit lokalen oder nationalen Partnern zu KI-Themen?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="slow5" value="0"> Noch nicht</label>
+      <label><input type="radio" name="slow5" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="slow5" value="2"> Teilweise</label>
+      <label><input type="radio" name="slow5" value="3"> Weitgehend</label>
+      <label><input type="radio" name="slow5" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_slow5">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="slow6">
+    <label class="question">Gibt es Strukturen zum Austausch von Strategien und Good-Practice-Beispielen?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="slow6" value="0"> Noch nicht</label>
+      <label><input type="radio" name="slow6" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="slow6" value="2"> Teilweise</label>
+      <label><input type="radio" name="slow6" value="3"> Weitgehend</label>
+      <label><input type="radio" name="slow6" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_slow6">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="slow7">
+    <label class="question">Erhalten Leitung, Verwaltung und IT gezielte Qualifizierungen zum KI-Einsatz?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="slow7" value="0"> Noch nicht</label>
+      <label><input type="radio" name="slow7" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="slow7" value="2"> Teilweise</label>
+      <label><input type="radio" name="slow7" value="3"> Weitgehend</label>
+      <label><input type="radio" name="slow7" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_slow7">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- Kategorie 5 -->
+<div class="vhs-category">
+  <h2>5. Innovation (KI-Seepferdchen) & Lernen vor Ort</h2>
+  
+  <div class="vhs-item" data-question="see1">
+    <label class="question">Bieten wir attraktive und partizipative Lernangebote mit leichtem Zugang an?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="see1" value="0"> Noch nicht</label>
+      <label><input type="radio" name="see1" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="see1" value="2"> Teilweise</label>
+      <label><input type="radio" name="see1" value="3"> Weitgehend</label>
+      <label><input type="radio" name="see1" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_see1">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="see2">
+    <label class="question">Werden diese Angebote inklusiv gestaltet und gemeinsam mit lokalen Communities entwickelt?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="see2" value="0"> Noch nicht</label>
+      <label><input type="radio" name="see2" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="see2" value="2"> Teilweise</label>
+      <label><input type="radio" name="see2" value="3"> Weitgehend</label>
+      <label><input type="radio" name="see2" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_see2">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="see3">
+    <label class="question">Nutzen wir lokale Lernorte und fördern praxisnahe Lernprozesse?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="see3" value="0"> Noch nicht</label>
+      <label><input type="radio" name="see3" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="see3" value="2"> Teilweise</label>
+      <label><input type="radio" name="see3" value="3"> Weitgehend</label>
+      <label><input type="radio" name="see3" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_see3">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="see4">
+    <label class="question">Fördern persönliche Begegnung und Gemeinschaftsformate die KI-Kompetenz?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="see4" value="0"> Noch nicht</label>
+      <label><input type="radio" name="see4" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="see4" value="2"> Teilweise</label>
+      <label><input type="radio" name="see4" value="3"> Weitgehend</label>
+      <label><input type="radio" name="see4" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_see4">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="see5">
+    <label class="question">Wird Rückmeldung aus Präsenz- und Vor-Ort-Formaten systematisch ausgewertet und umgesetzt?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="see5" value="0"> Noch nicht</label>
+      <label><input type="radio" name="see5" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="see5" value="2"> Teilweise</label>
+      <label><input type="radio" name="see5" value="3"> Weitgehend</label>
+      <label><input type="radio" name="see5" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_see5">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="see6">
+    <label class="question">Orientieren sich unsere KI-Formate an internationalen Good-Practice-Beispielen und werden regelmäßig evaluiert?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="see6" value="0"> Noch nicht</label>
+      <label><input type="radio" name="see6" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="see6" value="2"> Teilweise</label>
+      <label><input type="radio" name="see6" value="3"> Weitgehend</label>
+      <label><input type="radio" name="see6" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_see6">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="vhs-item" data-question="see7">
+    <label class="question">Ist klar definiert, wie wir KI-Kompetenz als gesellschaftliche Gestaltungskompetenz vor Ort verankern wollen?</label>
+    <div class="vhs-options">
+      <label><input type="radio" name="see7" value="0"> Noch nicht</label>
+      <label><input type="radio" name="see7" value="1"> Erste Schritte</label>
+      <label><input type="radio" name="see7" value="2"> Teilweise</label>
+      <label><input type="radio" name="see7" value="3"> Weitgehend</label>
+      <label><input type="radio" name="see7" value="4"> Vollständig</label>
+      <label>Priorität:
+        <select name="prio_see7">
+          <option value="hoch">hoch</option>
+          <option value="mittel" selected>mittel</option>
+          <option value="niedrig">niedrig</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</div>
+       </form>
+
+  <!-- Chart Container -->
+  <div class="vhs-chart-container">
+    <canvas id="vhsKiChart" width="700" height="400"></canvas>
+  </div>
+
+  <!-- Results -->
+  <div id="vhsResults" class="vhs-results">
+    <p>Bitte beantworten Sie die Fragen, um eine Auswertung zu erhalten.</p>
+  </div>
+
+  <!-- Download Section -->
+  <div class="vhs-download-section">
+    <h3>Ergebnisse herunterladen</h3>
+    <p>Laden Sie Ihre persönliche Auswertung herunter. Die Daten werden nicht auf dem Server gespeichert!</p>
+    <div class="vhs-download-buttons">
+      <button type="button" class="vhs-btn vhs-btn-primary" onclick="downloadPDF()">
+        <span class="vhs-btn-icon">[PDF]</span> Als PDF herunterladen
+      </button>
+      <button type="button" class="vhs-btn vhs-btn-secondary" onclick="downloadJSON()">
+        <span class="vhs-btn-icon">[JSON]</span> Als JSON speichern
+      </button>
+      <button type="button" class="vhs-btn vhs-btn-secondary" onclick="downloadCSV()">
+        <span class="vhs-btn-icon">[CSV]</span> Als CSV exportieren
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="vhs-footer">
+    <h3>Rechtliche Hinweise und Quellenangaben</h3>
+    
+    <h4>Über diese Checkliste</h4>
+    <p>Entwickelt von <strong>Dr. Carsten Weiß</strong>, Volkshochschule Stadt Oberhausen, im Rahmen des Workshops zur Förderung von KI-Kompetenz in der Erwachsenenbildung (November 2025).</p>
+    
+    <p><strong>Kontakt:</strong><br>
+    Dr. Carsten Weiß<br>
+    VHS Oberhausen, Bereich Beruf und IT<br>
+    E-Mail: <a href="/cdn-cgi/l/email-protection#c3a0a2b1b0b7a6adedb4a6aab0b083aca1a6b1aba2b6b0a6adeda7a6"><span class="__cf_email__" data-cfemail="37545645444352591940525e444477585552455f5642445259195352">[email&#160;protected]</span></a><br>
+    Tel: 0208 825-2477</p>
+    
+    <h4>Datenschutz (DSGVO-Konformität)</h4>
+    <p>Diese Anwendung verarbeitet Ihre Eingaben ausschließlich lokal in Ihrem Browser gemäß Art. 6 Abs. 1 lit. a DSGVO (Einwilligung durch Nutzung). Es werden keine personenbezogenen Daten gespeichert, übertragen oder protokolliert. Es erfolgt keine Verbindung zu externen Servern (CDNs). Alle verwendeten Bibliotheken (Chart.js) sind lokal gehostet. Es werden keine Cookies gesetzt und kein Tracking durchgeführt.</p>
+    
+    <p><strong>Verantwortliche Stelle:</strong><br>
+    Volkshochschule der Stadt Oberhausen<br>
+    Langemarkstraße 19-21<br>
+    46042 Oberhausen<br>
+    <a href="https://www.vhs-oberhausen.de" target="_blank" rel="noopener">www.vhs-oberhausen.de</a></p>
+    
+    <h4>Quellenangaben</h4>
+    <p>Diese Checkliste basiert teilweise auf folgenden Quellen:</p>
+    <ol>
+      <li><strong>D64 – Zentrum für Digitalen Fortschritt e. V. (2024):</strong><br>
+      <em>Materialien zu KI-Strategie und digitaler Bildung.</em><br>
+      Berlin: D64 e. V.<br>
+      Online: <a href="https://demokratische-ki.de/code-of-conduct/" target="_blank" rel="noopener">https://demokratische-ki.de/code-of-conduct/</a><br>
+      (Verwendung: Leitungs- und Organisationsfragen zur KI-Strategie und Werteorientierung)</li>
+	  
+	  <li><strong>Deutscher Volkshochschul-Verband e. V. (2025):</strong><br>
+	  <em>Handlungsempfehlungen für den Einsatz von KI an Volkshochschulen.</em><br>
+	  Bundesarbeitskreis Erweiterte Lernwelten (BAK ELW).<br>
+	  Bonn: DVV e. V., November 2025.<br>
+	  Online: <a href="https://vhs.link/handlungsempfehlungenKI" target="_blank" rel="noopener">https://vhs.link/handlungsempfehlungenKI</a><br>
+	  (Verwendung: Strategische Aspekte zu KI in Organisation, Bildungsarbeit und Marketing an Volkshochschulen)</li>
+      
+      <li><strong>Council of Europe (2025):</strong><br>
+      <em>Artificial Intelligence and Education: Regulating the Use of AI Systems in Education</em> (PREMS 019925 GBR 2511).<br>
+      Strasbourg: Council of Europe, Education Department.<br>
+      © Council of Europe 2025.<br>
+      DOI/URL: <a href="https://rm.coe.int/prems-019925-gbr-2511-artificial-intelligence-and-education-a4-web-bat/1680b6c970" target="_blank" rel="noopener">https://rm.coe.int/prems-019925-gbr-2511-artificial-intelligence-and-education-a4-web-bat/1680b6c970</a><br>
+      (Verwendung: Fragen zu Demokratie, Menschenrechten, Datenschutz und Verantwortung bei KI im Bildungsbereich)</li>
+    </ol>
+    
+    <h4>Urheberrecht und Lizenz</h4>
+    <p><strong>© Dr. Carsten Weiß, Volkshochschule Stadt Oberhausen, 2025.</strong><br>
+    </p>
+    
+    <p>Die Struktur, Fragen und Gestaltung dieser Checkliste unterliegen dem deutschen Urheberrecht (§§ 2 ff. UrhG). Zitate aus D64 (2024), Deutscher Volkshochschul-Verband e. V. (2025) und Council of Europe (2025) sind als Quellen gekennzeichnet und dienen der wissenschaftlichen bzw. pädagogischen Bezugnahme.</p>
+    
+    <p><strong>Lizenz:</strong> Dieses Werk ist lizenziert unter<br>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" target="_blank" rel="noopener">Creative Commons Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen 4.0 International (CC BY-NC-SA 4.0)</a></p>
+    
+    <p><strong>Erlaubt:</strong> Teilen und Bearbeiten unter Nennung der Quelle (Dr. Carsten Weiß, VHS Oberhausen) für nicht-kommerzielle Zwecke.</p>
+    
+    <h4>Haftungsausschluss</h4>
+    <p>Die VHS Oberhausen übernimmt keine Gewähr für die Vollständigkeit, Richtigkeit und Aktualität der bereitgestellten Inhalte. Die Nutzung der Checkliste erfolgt auf eigene Verantwortung. Jegliche Haftung für Schäden, die direkt oder indirekt aus der Nutzung dieser Checkliste entstehen, wird ausgeschlossen, soweit nicht Vorsatz oder grobe Fahrlässigkeit vorliegt.</p>
+    
+    <h4>Technische Umsetzung</h4>
+    <p>Diese Webanwendung verwendet:</p>
+    <ul>
+      <li><strong>Chart.js v4.4.0</strong> (MIT-Lizenz) – lokal gehostet unter /fileadmin/user_upload/ki-checkliste/</li>
+      <li><strong>System-Schriftarten</strong> – keine externen Web-Fonts (DSGVO-konform)</li>
+      <li><strong>Keine externen Abhängigkeiten</strong> – vollständig offline-fähig</li>
+    </ul>
+    
+    <div class="vhs-legal-notice">
+      <strong>Hinweis zu externen Links:</strong> Diese Seite enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar.
+    </div>
+    
+    <p style="margin-top: 2rem; font-size: 0.85rem; color: #4b5b6a; text-align: center;">
+      <strong>Version 1.1</strong> | Stand: November 2025 | 
+      Entwickelt mit TYPO3 CMS | 
+      <a href="https://www.vhs-oberhausen.de" target="_blank" rel="noopener">VHS Oberhausen</a>
+    </p>
+  </div>
+</div>
+
+<!-- Chart.js Library - LOKAL GEHOSTET (DSGVO!) -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="/fileadmin/user_upload/ki-checkliste/js/chart.umd.min.js"></script>
+
+<!-- Application Script -->
+<script>
+(function() {
+  'use strict';
+  
+  const form = document.getElementById('vhsKiForm');
+  const resultsDiv = document.getElementById('vhsResults');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  let chartInstance = null;
+  
+  const categories = [
+    { key: 'KI aus Leitungssicht', prefix: 'leitung', count: 8 },
+    { key: 'Stadtgesellschaft der Lernenden', prefix: 'stadt', count: 7 },
+    { key: 'Differenzerfahrung & Vielfalt', prefix: 'divers', count: 7 },
+    { key: 'Langsamkeit & Nachhaltigkeit', prefix: 'slow', count: 7 },
+    { key: 'KI-Seepferdchen & Lernen vor Ort', prefix: 'see', count: 7 }
+  ];
+  
+  const totalQuestions = categories.reduce((sum, cat) => sum + cat.count, 0);
+  
+  // Event Listeners
+  if (form) {
+    form.addEventListener('change', function(e) {
+      if (e.target.type === 'radio') {
+        const item = e.target.closest('.vhs-item');
+        if (item) item.classList.add('answered');
+      }
+      analyzeResults();
+    });
+  }
+  
+  function analyzeResults() {
+    const results = {};
+    const urgentItems = [];
+    let answeredCount = 0;
+    
+    categories.forEach(cat => {
+      const values = [];
+      
+      for (let i = 1; i <= cat.count; i++) {
+        const radioName = cat.prefix + i;
+        const prioName = 'prio_' + cat.prefix + i;
+        
+        const radio = document.querySelector('input[name="' + radioName + '"]:checked');
+        const prioSelect = document.querySelector('select[name="' + prioName + '"]');
+        
+        if (radio) {
+          answeredCount++;
+          const value = parseInt(radio.value);
+          values.push(value);
+          
+          if (prioSelect && prioSelect.value === 'hoch' && value <= 1) {
+            const questionLabel = radio.closest('.vhs-item')
+              .querySelector('.question').textContent.trim();
+            urgentItems.push(questionLabel);
+          }
+        }
+      }
+      
+      if (values.length > 0) {
+        results[cat.key] = values.reduce((a, b) => a + b, 0) / values.length;
+      } else {
+        results[cat.key] = 0;
+      }
+    });
+    
+    updateProgress(answeredCount);
+    displayResults(results, urgentItems);
+    updateChart(results);
+  }
+  
+  function updateProgress(answered) {
+    const percentage = Math.round((answered / totalQuestions) * 100);
+    progressBar.style.width = percentage + '%';
+    progressBar.textContent = percentage + '%';
+    progressText.textContent = answered + ' von ' + totalQuestions + ' Fragen beantwortet';
+  }
+  
+  function displayResults(results, urgentItems) {
+    let html = '<h2>Interpretation & Weiterarbeit</h2>';
+    
+    let hasResults = false;
+    for (const key in results) {
+      if (results[key] === 0) continue;
+      hasResults = true;
+      
+      const avg = results[key];
+      if (avg <= 1) {
+        html += '<p><span class="vhs-status-low">' + key + ': Schwachstellen erkannt – kurzfristig analysieren und in die Jahresplanung aufnehmen!</span></p>';
+      } else if (avg <= 3) {
+        html += '<p><span class="vhs-status-mid">' + key + ': Entwicklungspotenzial – gezielte Weiterentwicklung durch Schulungen oder Pilotprojekte empfohlen.</span></p>';
+      } else {
+        html += '<p><span class="vhs-status-high">' + key + ': Best Practice – als Good Practice dokumentieren und mit anderen Bildungseinrichtungen teilen.</span></p>';
+      }
+    }
+    
+    if (!hasResults) {
+      html = '<p>Bitte beantworten Sie die Fragen, um eine Auswertung zu erhalten.</p>';
+    }
+    
+    if (urgentItems.length > 0) {
+      html += '<div class="vhs-urgent">';
+      html += '<h3>Dringender Handlungsbedarf</h3>';
+      html += '<p>Folgende Fragen sind als <strong>hoch</strong> priorisiert und gleichzeitig wenig umgesetzt. Hier empfiehlt sich kurzfristiges Handeln:</p>';
+      html += '<ul>';
+      urgentItems.forEach(function(item) {
+        html += '<li>' + item + '</li>';
+      });
+      html += '</ul></div>';
+    }
+    
+    resultsDiv.innerHTML = html;
+  }
+  
+  function updateChart(results) {
+    const ctx = document.getElementById('vhsKiChart');
+    if (!ctx) return;
+    
+    const labels = [];
+    const data = [];
+    
+    for (const key in results) {
+      if (results[key] > 0) {
+        labels.push(key);
+        data.push(results[key]);
+      }
+    }
+    
+    if (chartInstance) chartInstance.destroy();
+    
+    if (data.length === 0) {
+      ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+      return;
+    }
+    
+    chartInstance = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Durchschnittliche Bewertung pro Bereich',
+          data: data,
+          backgroundColor: 'rgba(0, 102, 161, 0.2)',
+          borderColor: '#0066a1',
+          pointBackgroundColor: '#0066a1',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#0066a1',
+          borderWidth: 3,
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }]
+      },
+      options: {
+        scales: {
+          r: {
+            beginAtZero: true,
+            min: 0,
+            max: 4,
+            ticks: { 
+              stepSize: 1, 
+              font: { size: 12 },
+              callback: function(value) {
+                const labels = ['Noch nicht', 'Erste Schritte', 'Teilweise', 'Weitgehend', 'Vollständig'];
+                return labels[value] || value;
+              }
+            },
+            pointLabels: {
+              font: { size: 13, weight: 'bold' }
+            }
+          }
+        },
+        plugins: {
+          legend: { 
+            display: true, 
+            position: 'top',
+            labels: { font: { size: 14 } }
+          },
+          title: {
+            display: true,
+            text: 'KI-Kompetenz Profil - VHS Oberhausen',
+            font: { size: 18, weight: 'bold' },
+            color: '#0066a1'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const labels = ['Noch nicht', 'Erste Schritte', 'Teilweise', 'Weitgehend', 'Vollständig'];
+                const value = Math.round(context.parsed.r * 10) / 10;
+                return context.dataset.label + ': ' + value + ' (' + labels[Math.round(value)] + ')';
+              }
+            }
+          }
+        },
+        responsive: true,
+        maintainAspectRatio: true
+      }
+    });
+  }
+  
+  // Download Functions
+  window.downloadPDF = function() {
+    window.print();
+  };
+  
+  window.downloadJSON = function() {
+    const data = collectFormData();
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ki-checkliste-vhs-oberhausen-' + new Date().toISOString().split('T')[0] + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+  
+  window.downloadCSV = function() {
+    const data = collectFormData();
+    let csv = '\uFEFF'; // UTF-8 BOM für korrekte Umlaute in Excel
+    csv += 'Kategorie;Frage;Bewertung;Bewertungstext;Priorität\n';
+    
+    data.categories.forEach(function(cat) {
+      cat.questions.forEach(function(q) {
+        csv += '"' + cat.name + '";';
+        csv += '"' + q.question.replace(/"/g, '""') + '";';
+        csv += '"' + q.value + '";';
+        csv += '"' + q.valueText + '";';
+        csv += '"' + q.priority + '"\n';
+      });
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ki-checkliste-vhs-oberhausen-' + new Date().toISOString().split('T')[0] + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+  
+  function collectFormData() {
+    const data = {
+      titel: 'Oberhausener KI-Checkliste: Bildung zur KI',
+      datum: new Date().toISOString(),
+      institution: 'VHS Oberhausen',
+      categories: []
+    };
+    
+    categories.forEach(function(cat) {
+      const catData = {
+        name: cat.key,
+        questions: []
+      };
+      
+      for (let i = 1; i <= cat.count; i++) {
+        const radioName = cat.prefix + i;
+        const prioName = 'prio_' + cat.prefix + i;
+        
+        const radio = document.querySelector('input[name="' + radioName + '"]:checked');
+        const prioSelect = document.querySelector('select[name="' + prioName + '"]');
+        const questionText = document.querySelector('input[name="' + radioName + '"]')
+          ?.closest('.vhs-item')?.querySelector('.question')?.textContent.trim();
+        
+        if (radio && questionText) {
+          const valueTexts = ['Noch nicht', 'Erste Schritte', 'Teilweise', 'Weitgehend', 'Vollständig'];
+          catData.questions.push({
+            frage: questionText,
+            question: questionText,
+            bewertung: parseInt(radio.value),
+            value: parseInt(radio.value),
+            bewertungstext: valueTexts[parseInt(radio.value)],
+            valueText: valueTexts[parseInt(radio.value)],
+            priorität: prioSelect ? prioSelect.value : 'mittel',
+            priority: prioSelect ? prioSelect.value : 'mittel'
+          });
+        }
+      }
+      
+      if (catData.questions.length > 0) {
+        data.categories.push(catData);
+      }</body></html>
